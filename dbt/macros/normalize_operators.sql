@@ -17,6 +17,6 @@
       'tigo','tig','tgo'
     ) then 'Tigo'
     /* por defecto, valores desconocidos */
-    else null
+    else 'Unknown'
   end
 {% endmacro %}

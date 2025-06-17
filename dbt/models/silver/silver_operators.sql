@@ -1,7 +1,9 @@
-{{ config(materialized='table') }}
+{{ config(materialized = 'table') }}
 
 SELECT DISTINCT
-    md5(operator) AS operator_id,   -- surrogate PK
-    {{ normalize_country('operator') }} AS operator
+    md5({{ normalize_operator('operator') }}) AS operator_id,  -- usa valor normalizado
+    {{ normalize_operator('operator') }}     AS operator
 FROM 
     {{ ref('staging_mobile_raw') }}
+WHERE operator IS NOT NULL
+  AND operator != ''

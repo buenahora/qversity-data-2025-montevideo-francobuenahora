@@ -104,3 +104,31 @@ models:
           - relationships:
               to: ref('silver_services')
               field: service_id
+
+  #  SILVER PLANS (plan vigente por cliente)
+  - name: silver_plans
+    description: Relación cliente-plan-operador con métricas económicas y de uso
+    columns:
+      # surrogate key única del plan comercial
+      - name: plan_id
+        tests:
+          - unique
+          - not_null
+
+      # tipo de plan (control, prepago, pospago…)
+      - name: plan_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Control', 'Prepago', 'Pospago', 'Unknown'] # agrega más si aplican
+
+      # límites de datos y facturación (ya forzados a ≥ 0 con GREATEST)
+      - name: monthly_data_gb
+        tests: [not_null]
+
+      - name: monthly_bill_usd
+        tests: [not_null]
+
+      # # timestamp de inicio / última captura del plan
+      # - name: plan_start_ts
+      #   tests: [not_null]

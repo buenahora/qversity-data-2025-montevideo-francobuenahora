@@ -1,20 +1,8 @@
 {% macro normalize_plan_type(col) %}
-  case
-    /* Control */
-    when lower({{ col }}) in (
-      'ctrl', 'control', 'contrrol'
-    ) then 'Control'
-
-    /* Prepago */
-    when lower({{ col }}) in (
-      'prepago', 'pre_pago', 'pre-pago', 'pre', 'prepago'
-    ) then 'Prepago'
-
-    /* Post-pago */
-    when lower({{ col }}) in (
-      'pospago', 'post_pago', 'post-pago', 'pos', 'pospago'
-    ) then 'Postpago'
-
-    else null
-  end
+  CASE
+    WHEN TRIM(LOWER({{ col }})) IN ('control','ctrl','contrrol') THEN 'Control'
+    WHEN TRIM(LOWER({{ col }})) IN ('prepago','pre_pago','pre','pos') THEN 'Prepago'
+    WHEN TRIM(LOWER({{ col }})) IN ('pospago','post_pago','post-pago','pospago') THEN 'Pospago'
+    ELSE 'Unknown'
+  END
 {% endmacro %}
