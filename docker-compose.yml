@@ -10,7 +10,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - '5432:5432'
 
   airflow:
     image: apache/airflow:2.7.3-python3.11
@@ -26,8 +26,9 @@ services:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./data:/opt/airflow/data
+      - ./dbt:/dbt
     ports:
-      - "8080:8080"
+      - '8080:8080'
     command: >
       bash -c "
       airflow db init &&
