@@ -7,7 +7,6 @@ import requests
 
 # Funciones del DAG
 def download_json():
-    print("✅ Ejecutando descarga desde S3")
     S3_URL = "https://qversity-raw-public-data.s3.amazonaws.com/mobile_customers_messy_dataset.json"
     LOCAL_PATH = "/opt/airflow/data/raw/mobile_customers_messy_dataset.json"
     
@@ -16,15 +15,12 @@ def download_json():
     if response.status_code == 200:
         with open(LOCAL_PATH, "wb") as f:
             f.write(response.content)
-        print(f"✅ Archivo guardado en {LOCAL_PATH}")
     else:
         raise Exception(f"❌ Error al descargar: Código {response.status_code}")
 
 def ingest_json_to_postgres():
     import pandas as pd
     from sqlalchemy import create_engine
-
-    print("✅ Iniciando ingesta a PostgreSQL")
 
     json_path = "/opt/airflow/data/raw/mobile_customers_messy_dataset.json"
     df = pd.read_json(json_path)
@@ -37,10 +33,8 @@ def ingest_json_to_postgres():
     engine = create_engine("postgresql://qversity-admin:qversity-admin@postgres:5432/qversity")
     df.to_sql("raw", engine, schema="bronze", if_exists="append", index=False)
 
-    print("✅ Datos cargados en bronze.raw")
 
 # Argumentos por defecto del DAG
-
 default_args = {
     "owner": "qversity",
     "depends_on_past": False,
@@ -52,7 +46,6 @@ default_args = {
 }
 
 # Definicion del DAG
-
 with DAG(
     dag_id="ingest_data_dag",
     default_args=default_args,

@@ -1,0 +1,107 @@
+version: 2
+
+models:
+  #  SILVER_CUSTOMERS
+  - name: silver_customers
+    description: Clientes deduplicados y normalizados
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+
+      - name: email
+        tests:
+          - not_null
+
+      - name: status
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Active', 'Inactive', 'Suspended']
+
+      - name: location_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_locations')
+              field: location_id
+
+  #  SILVER_SERVICES
+  - name: silver_services
+    description: Catálogo único de servicios contratables
+    columns:
+      - name: service_id
+        tests:
+          - unique
+          - not_null
+
+      - name: service_name
+        tests:
+          - unique
+          - not_null
+
+  #  SILVER_DEVICES
+  - name: silver_devices
+    description: Dimensión de dispositivos con marca y modelo limpios
+    columns:
+      - name: device_id
+        tests:
+          - unique
+          - not_null
+
+      - name: device_brand
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Xiaomi', 'Huawei', 'Samsung', 'Apple']
+
+      - name: device_model
+        tests:
+          - not_null
+
+  #  SILVER_LOCATIONS
+  - name: silver_locations
+    description: Dimensión de ubicaciones geo-normalizadas
+    columns:
+      - name: location_id
+        tests:
+          - unique
+          - not_null
+
+      - name: country
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                ['Argentina', 'Chile', 'Colombia', 'Mexico', 'Peru', 'Unknown']
+
+      - name: city
+        tests:
+          - not_null
+
+      - name: latitude
+        tests:
+          - not_null
+
+      - name: longitude
+        tests:
+          - not_null
+
+  #  SILVER_CUSTOMERS_SERVICES
+  - name: silver_customers_services
+    description: Relación N:M entre clientes y servicios
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_customers')
+              field: customer_id
+
+      - name: service_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_services')
+              field: service_id

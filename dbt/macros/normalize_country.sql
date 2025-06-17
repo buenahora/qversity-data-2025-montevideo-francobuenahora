@@ -5,6 +5,6 @@
     when lower({{col}}) in ('argentina','argentin','argentna','arg','ar') then 'Argentina'
     when lower({{col}}) in ('colombia','col','colomia','colombi','co') then 'Colombia'
     when lower({{col}}) in ('peru','per','pru','pe') then 'Peru'
-    else null
+    else 'Unknown'
   end
 {% endmacro %}

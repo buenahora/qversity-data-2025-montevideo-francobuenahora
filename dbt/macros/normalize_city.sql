@@ -52,6 +52,6 @@
       'monterrey'
     ) then 'Monterrey'
     /* por defecto, valores desconocidos */
-    else null
+    else 'Unknown'
   end
 {% endmacro %}

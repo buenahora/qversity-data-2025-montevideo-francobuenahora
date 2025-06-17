@@ -11,3 +11,7 @@ FROM
 WHERE 
     country IS NOT NULL
     AND city IS NOT NULL
+    AND latitude IS NOT NULL
+    AND longitude IS NOT NULL
+    AND latitude BETWEEN -90 AND 90
+    AND longitude BETWEEN -180 AND 180
