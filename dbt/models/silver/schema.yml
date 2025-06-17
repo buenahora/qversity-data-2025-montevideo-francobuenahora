@@ -132,3 +132,48 @@ models:
       # # timestamp de inicio / última captura del plan
       # - name: plan_start_ts
       #   tests: [not_null]
+
+      # silver_plan_operator
+  - name: silver_plan_operator
+    columns:
+      - name: plan_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_plans')
+              field: plan_id
+      - name: operator_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_operators')
+              field: operator_id
+
+  - name: silver_customer_plan
+    description: Relación entre clientes y planes contratados
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_customers')
+              field: customer_id
+
+      - name: plan_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_plans')
+              field: plan_id
+
+      - name: plan_start_ts
+        tests:
+          - not_null
+
+      - name: credit_limit
+        tests:
+          - not_null
+
+      - name: data_usage_current_month
+        tests:
+          - not_null
