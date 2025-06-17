@@ -1,57 +1,72 @@
 {% macro normalize_city(col) %}
-  case
+  CASE
     /* México */
-    when lower({{ col }}) in (
+    WHEN TRIM(LOWER({{ col }})) IN (
       'ciudad de méxico','ciudad de mexico','cdmx'
-    ) then 'Ciudad de México'
+    ) THEN 'Ciudad de México'
+
     /* Argentina */
-    when lower({{ col }}) in (
+    WHEN TRIM(LOWER({{ col }})) IN (
       'cordoba','córdoba','coroba'
-    ) then 'Córdoba'
-    when lower({{ col }}) in (
+    ) THEN 'Córdoba'
+
+    WHEN TRIM(LOWER({{ col }})) IN (
       'buenos aires'
-    ) then 'Buenos Aires'
-    when lower({{ col }}) in (
+    ) THEN 'Buenos Aires'
+
+    WHEN TRIM(LOWER({{ col }})) IN (
       'rosario'
-    ) then 'Rosario'
+    ) THEN 'Rosario'
+
     /* Chile */
-    when lower({{ col }}) in (
+    WHEN TRIM(LOWER({{ col }})) IN (
       'santiago','santigo'
-    ) then 'Santiago'
-    when lower({{ col }}) in (
+    ) THEN 'Santiago'
+
+    WHEN TRIM(LOWER({{ col }})) IN (
       'valparaiso','valparaíso'
-    ) then 'Valparaíso'
-    when lower({{ col }}) in (
+    ) THEN 'Valparaíso'
+
+    WHEN TRIM(LOWER({{ col }})) IN (
       'concepcion','concepción'
-    ) then 'Concepción'
+    ) THEN 'Concepción'
+
     /* Colombia */
-    when lower({{ col }}) in (
+    WHEN TRIM(LOWER({{ col }})) IN (
       'medelin','medellin'
-    ) then 'Medellín'
-    when lower({{ col }}) in (
+    ) THEN 'Medellín'
+
+    WHEN TRIM(LOWER({{ col }})) IN (
       'cali','cal'
-    ) then 'Cali'
-    when lower({{ col }}) in (
-      'barranquilla'
-    ) then 'Barranquilla'
+    ) THEN 'Cali'
+
+    WHEN TRIM(LOWER({{ col }})) IN (
+      'barranquilla','barranquila','barranquilla'
+    ) THEN 'Barranquilla'
+
     /* Perú */
-    when lower({{ col }}) in (
+    WHEN TRIM(LOWER({{ col }})) IN (
       'lima'
-    ) then 'Lima'
-    when lower({{ col }}) in (
+    ) THEN 'Lima'
+
+    WHEN TRIM(LOWER({{ col }})) IN (
       'arequipa','areqipa'
-    ) then 'Arequipa'
-    when lower({{ col }}) in (
+    ) THEN 'Arequipa'
+
+    WHEN TRIM(LOWER({{ col }})) IN (
       'trujillo'
-    ) then 'Trujillo'
+    ) THEN 'Trujillo'
+
     /* México (ciudades de provincia) */
-    when lower({{ col }}) in (
+    WHEN TRIM(LOWER({{ col }})) IN (
       'guadaljara','guadalajara'
-    ) then 'Guadalajara'
-    when lower({{ col }}) in (
+    ) THEN 'Guadalajara'
+
+    WHEN TRIM(LOWER({{ col }})) IN (
       'monterrey'
-    ) then 'Monterrey'
+    ) THEN 'Monterrey'
+
     /* por defecto, valores desconocidos */
-    else 'Unknown'
-  end
+    ELSE 'Unknown'
+  END
 {% endmacro %}

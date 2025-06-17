@@ -1,10 +1,25 @@
 {% macro normalize_country(col) %}
-  case
-    when lower({{col}}) in ('mex','mexco','mx','mejico') then 'Mexico'
-    when lower({{col}}) in ('chl','chi','chile','chle','cl') then 'Chile'
-    when lower({{col}}) in ('argentina','argentin','argentna','arg','ar') then 'Argentina'
-    when lower({{col}}) in ('colombia','col','colomia','colombi','co') then 'Colombia'
-    when lower({{col}}) in ('peru','per','pru','pe') then 'Peru'
-    else 'Unknown'
-  end
+  CASE
+    WHEN TRIM(LOWER({{ col }})) IN (
+      'mex','mexco','mx','mejico','mexico'
+    ) THEN 'Mexico'
+
+    WHEN TRIM(LOWER({{ col }})) IN (
+      'chl','chi','chile','chle','cl'
+    ) THEN 'Chile'
+
+    WHEN TRIM(LOWER({{ col }})) IN (
+      'argentina','argentin','argentna','arg','ar'
+    ) THEN 'Argentina'
+
+    WHEN TRIM(LOWER({{ col }})) IN (
+      'colombia','col','colomia','colombi','co'
+    ) THEN 'Colombia'
+
+    WHEN TRIM(LOWER({{ col }})) IN (
+      'peru','per','pru','pe'
+    ) THEN 'Peru'
+
+    ELSE 'Unknown'
+  END
 {% endmacro %}

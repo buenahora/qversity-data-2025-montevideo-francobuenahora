@@ -12,18 +12,20 @@ SELECT DISTINCT ON (customer_id)
     INITCAP(status) AS status,
     l.location_id AS location_id,   -- <--- aquí la FK lógica
     ingestion_date
-FROM {{ ref('staging_mobile_raw') }} AS c
-
-JOIN {{ ref('silver_locations') }} AS l
-ON c.country = l.country
-AND c.city = l.city
+FROM 
+    {{ ref('staging_mobile_raw') }} AS c
+LEFT JOIN 
+    {{ ref('silver_locations') }} AS l
+    
+ON {{ normalize_country('c.country') }} = l.country
+AND {{ normalize_city('c.city') }} = l.city
 
 WHERE
     customer_id IS NOT NULL
     AND age BETWEEN 0 AND 119
     AND credit_score BETWEEN 300 AND 850
     AND INITCAP(status) IN ('Active', 'Inactive', 'Suspended')
-    AND email !~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$'
+    AND email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$'
 
 ORDER BY
     customer_id,
