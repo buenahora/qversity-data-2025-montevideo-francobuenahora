@@ -1,7 +1,7 @@
 {{ config(materialized = 'table') }}
 
 SELECT
-  MD5(device_brand || '|' || device_model) AS device_id,
+  MD5({{normalize_brand('device_brand')}} || '|' || device_model) AS device_id,
   device_brand,
   device_model
 FROM (

@@ -25,6 +25,11 @@ models:
           - relationships:
               to: ref('silver_locations')
               field: location_id
+      - name: device_id
+        tests:
+          - relationships:
+              to: ref('silver_devices')
+              field: device_id
 
   #  SILVER_SERVICES
   - name: silver_services

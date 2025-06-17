@@ -6,7 +6,8 @@ SELECT DISTINCT
     c.credit_limit,
     c.data_usage_current_month,
     c.ingestion_date AS plan_start_ts
-FROM {{ ref('staging_mobile_raw') }} c
+FROM 
+{{ ref('staging_mobile_raw') }} c
 JOIN {{ ref('silver_customers') }} sc
   ON c.customer_id = sc.customer_id
 JOIN {{ ref('silver_plans') }} p

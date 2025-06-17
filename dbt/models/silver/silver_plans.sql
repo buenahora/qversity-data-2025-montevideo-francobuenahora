@@ -8,10 +8,10 @@ WITH raw_plans AS (
             COALESCE(monthly_data_gb::text,  '0'),
             COALESCE(monthly_bill_usd::text, '0')
           )
-        )                                 AS plan_id,
+        ) AS plan_id,
         {{ normalize_plan_type('plan_type') }} AS plan_type,
-        GREATEST(monthly_data_gb,  0)      AS monthly_data_gb,
-        GREATEST(monthly_bill_usd, 0)      AS monthly_bill_usd
+        GREATEST(monthly_data_gb,  0) AS monthly_data_gb,
+        GREATEST(monthly_bill_usd, 0) AS monthly_bill_usd
     FROM {{ ref('staging_mobile_raw') }}
     WHERE plan_type IS NOT NULL
 )

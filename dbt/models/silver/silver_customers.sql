@@ -10,8 +10,9 @@ SELECT DISTINCT ON (customer_id)
     registration_date,
     credit_score,
     INITCAP(status) AS status,
-    l.location_id AS location_id,   -- <--- aquí la FK lógica
-    ingestion_date
+    l.location_id AS location_id,
+    ingestion_date,
+    MD5({{normalize_brand('c.device_brand')}} || '|' || c.device_model) AS device_id
 FROM 
     {{ ref('staging_mobile_raw') }} AS c
 LEFT JOIN 
