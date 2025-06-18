@@ -11,6 +11,7 @@ WITH exploded AS (
 
 SELECT DISTINCT
     md5(service_name) AS service_id,
-    service_name
+    initcap(service_name) AS service_name,
+    CURRENT_TIMESTAMP AS run_ts
 FROM 
     exploded

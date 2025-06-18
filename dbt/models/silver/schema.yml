@@ -79,7 +79,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['Argentina', 'Chile', 'Colombia', 'Mexico', 'Peru', 'Unknown']
+              values:
+                ['Argentina', 'Chile', 'Colombia', 'Mexico', 'Peru', 'Unknown']
 
       - name: city
         description: Ciudad normalizada
@@ -136,6 +137,13 @@ models:
         description: Facturación mensual del plan en USD
         tests: [not_null]
 
+      - name: operator_id
+        description: Llave foránea a la tabla de operadores
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_operators')
+              field: operator_id
 
   # Creo que este modelo no es necesario, ya que la relación entre planes y servicios se puede hacer directamente desde silver_plans
   # silver_plans_operators

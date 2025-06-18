@@ -25,8 +25,8 @@ SELECT
     status,
     device_brand,
     device_model,
-    contracted_services,         -- JSON array
-    payment_history,             -- JSON array
+    contracted_services,
+    payment_history,
     credit_limit::NUMERIC,
     data_usage_current_month::NUMERIC,
     latitude::NUMERIC,

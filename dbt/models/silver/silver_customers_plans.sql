@@ -5,12 +5,15 @@ SELECT DISTINCT
     p.plan_id,
     c.credit_limit,
     c.data_usage_current_month,
-    c.ingestion_date AS plan_start_ts
+    c.ingestion_date AS plan_start_ts,
+    CURRENT_TIMESTAMP AS run_ts
+
 FROM 
   {{ ref('staging_mobile_raw') }} AS c
 JOIN 
   {{ ref('silver_customers') }} AS sc
-  ON c.customer_id = sc.customer_id
+  ON 
+    c.customer_id = sc.customer_id
 JOIN 
   {{ ref('silver_plans') }} AS p
 ON md5(

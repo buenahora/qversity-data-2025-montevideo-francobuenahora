@@ -14,11 +14,14 @@ WITH exploded AS (
 SELECT DISTINCT
   md5(concat_ws('|', e.customer_id, e.service_name)) AS customer_service_id,
   e.customer_id,
-  s.service_id
+  s.service_id,
+  CURRENT_TIMESTAMP AS run_ts
 FROM exploded AS e
 JOIN 
   {{ ref('silver_customers') }} AS c
-ON e.customer_id = c.customer_id
+ON 
+  e.customer_id = c.customer_id
 JOIN 
   {{ ref('silver_services') }} AS s
-ON e.service_name = s.service_name
+ON 
+  e.service_name = s.service_name

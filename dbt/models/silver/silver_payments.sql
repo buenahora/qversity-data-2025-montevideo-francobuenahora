@@ -25,14 +25,17 @@ SELECT
     ) AS payment_id,
 
     customer_id,
-    (p ->> 'date')::date AS payment_date,
+
+    (p ->> 'date')::DATE AS payment_date,
 
     CASE
         WHEN (p ->> 'amount') ~ '^[0-9]+(\.[0-9]+)?$'
-            THEN greatest((p ->> 'amount')::numeric, 0)
+            THEN greatest((p ->> 'amount')::NUMERIC, 0)
         ELSE 0
     END AS payment_amount,
-    p ->> 'status' AS payment_status
+    
+    initcap(p ->> 'status') AS payment_status,
+    CURRENT_TIMESTAMP AS run_ts
 
 FROM 
     exploded

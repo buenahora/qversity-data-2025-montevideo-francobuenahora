@@ -9,11 +9,12 @@ SELECT DISTINCT ON (customer_id)
     age,
     registration_date,
     credit_score,
-    INITCAP(status) AS status,
+    initcap(status) AS status,
     l.location_id AS location_id,
-    md5({{normalize_brand('c.device_brand')}} || '|' || c.device_model) AS device_id,
+    md5({{normalize_brand('c.device_brand')}} || '|' || {{normalize_model('c.device_model')}}) AS device_id,
     ingestion_date,
-    source
+    source,
+    CURRENT_TIMESTAMP AS run_ts
 FROM 
     {{ ref('staging_mobile_raw') }} AS c
 LEFT JOIN 
@@ -29,6 +30,10 @@ WHERE
     AND credit_score BETWEEN 300 AND 850
     AND INITCAP(status) IN ('Active', 'Inactive', 'Suspended')
     AND email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$'
+    AND device_brand IS NOT NULL
+    AND device_model IS NOT NULL
+    AND device_model != ''
+    AND device_brand != ''
 
 ORDER BY
     customer_id,

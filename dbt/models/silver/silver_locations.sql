@@ -4,8 +4,9 @@ SELECT DISTINCT
     md5(concat_ws('|', country, city, latitude::text, longitude::text)) AS location_id,
     {{ normalize_city('city') }} AS city,
     {{ normalize_country('country') }} AS country,
-    latitude::numeric,
-    longitude::numeric
+    ROUND(latitude::NUMERIC, 3) AS latitude,
+    ROUND(longitude::NUMERIC, 3) AS longitude,
+    CURRENT_TIMESTAMP AS run_ts
 FROM 
     {{ ref('staging_mobile_raw') }}
 WHERE 
