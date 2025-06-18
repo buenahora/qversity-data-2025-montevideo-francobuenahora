@@ -12,10 +12,14 @@ WITH raw_plans AS (
 
         {{ normalize_plan_type('plan_type') }} AS plan_type,
         greatest(monthly_data_gb,  0) AS monthly_data_gb,
-        greatest(monthly_bill_usd, 0) AS monthly_bill_usd
-
+        greatest(monthly_bill_usd, 0) AS monthly_bill_usd,
+        o.operator_id AS operator_id
     FROM 
-      {{ ref('staging_mobile_raw') }}
+      {{ ref('staging_mobile_raw') }} AS p
+    JOIN 
+      {{ ref('silver_operators') }} AS o
+    ON 
+      {{ normalize_operator(p.operator) }} = o.operator
     WHERE 
       plan_type IS NOT NULL
 )

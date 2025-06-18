@@ -138,25 +138,25 @@ models:
 
 
   # Creo que este modelo no es necesario, ya que la relación entre planes y servicios se puede hacer directamente desde silver_plans
-  # SILVER_PLAN_SERVICES
-  - name: silver_plan_operator
-    description: Relación entre planes y operadores que los ofrecen
-    columns:
-      - name: plan_id
-        description: Llave foránea al catálogo de planes
-        tests:
-          - not_null
-          - relationships:
-              to: ref('silver_plans')
-              field: plan_id
+  # silver_plans_operators
+  # - name: silver_plan_operator
+  #   description: Relación entre planes y operadores que los ofrecen
+  #   columns:
+  #     - name: plan_id
+  #       description: Llave foránea al catálogo de planes
+  #       tests:
+  #         - not_null
+  #         - relationships:
+  #             to: ref('silver_plans')
+  #             field: plan_id
 
-      - name: operator_id
-        description: Llave foránea a la tabla de operadores
-        tests:
-          - not_null
-          - relationships:
-              to: ref('silver_operators')
-              field: operator_id
+  #     - name: operator_id
+  #       description: Llave foránea a la tabla de operadores
+  #       tests:
+  #         - not_null
+  #         - relationships:
+  #             to: ref('silver_operators')
+  #             field: operator_id
 
   # SILVER_CUSTOMERS_PLANS
   - name: silver_customers_plans

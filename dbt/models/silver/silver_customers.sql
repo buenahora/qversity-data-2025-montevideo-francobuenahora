@@ -11,8 +11,9 @@ SELECT DISTINCT ON (customer_id)
     credit_score,
     INITCAP(status) AS status,
     l.location_id AS location_id,
+    md5({{normalize_brand('c.device_brand')}} || '|' || c.device_model) AS device_id,
     ingestion_date,
-    md5({{normalize_brand('c.device_brand')}} || '|' || c.device_model) AS device_id
+    source
 FROM 
     {{ ref('staging_mobile_raw') }} AS c
 LEFT JOIN 
