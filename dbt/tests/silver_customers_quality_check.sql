@@ -1,5 +1,6 @@
 SELECT *
-FROM {{ ref('silver_customers') }}
+FROM 
+  {{ ref('silver_customers') }}
 WHERE 
   age NOT BETWEEN 0 AND 119
   OR credit_score NOT BETWEEN 300 AND 850

@@ -12,14 +12,15 @@ SELECT DISTINCT ON (customer_id)
     INITCAP(status) AS status,
     l.location_id AS location_id,
     ingestion_date,
-    MD5({{normalize_brand('c.device_brand')}} || '|' || c.device_model) AS device_id
+    md5({{normalize_brand('c.device_brand')}} || '|' || c.device_model) AS device_id
 FROM 
     {{ ref('staging_mobile_raw') }} AS c
 LEFT JOIN 
     {{ ref('silver_locations') }} AS l
-    
-ON {{ normalize_country('c.country') }} = l.country
-AND {{ normalize_city('c.city') }} = l.city
+ON 
+    {{ normalize_country('c.country') }} = l.country
+AND 
+    {{ normalize_city('c.city') }} = l.city
 
 WHERE
     customer_id IS NOT NULL

@@ -1,4 +1,6 @@
 {% macro normalize_operator(col) %}
+-- Esta macro normaliza los nombres de operadores móviles a un formato consistente.
+-- Se espera que el parámetro `col` sea el nombre de la columna que contiene los nombres de los operadores.
   case
     /* WOM */
     when lower({{ col }}) in (

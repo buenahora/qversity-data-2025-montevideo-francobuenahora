@@ -1,4 +1,6 @@
 {% macro normalize_city(col) %}
+-- Este macro normaliza los nombres de ciudades a un formato consistente.
+-- Se espera que el parámetro `col` sea el nombre de la columna que contiene los nombres de las ciudades.
   CASE
     /* México */
     WHEN TRIM(LOWER({{ col }})) IN (

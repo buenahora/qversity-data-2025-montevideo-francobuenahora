@@ -7,13 +7,18 @@ SELECT DISTINCT
     c.data_usage_current_month,
     c.ingestion_date AS plan_start_ts
 FROM 
-{{ ref('staging_mobile_raw') }} c
-JOIN {{ ref('silver_customers') }} sc
+  {{ ref('staging_mobile_raw') }} AS c
+JOIN 
+  {{ ref('silver_customers') }} AS sc
   ON c.customer_id = sc.customer_id
-JOIN {{ ref('silver_plans') }} p
-  ON md5(concat_ws('|',
+JOIN 
+  {{ ref('silver_plans') }} AS p
+ON md5(
+       concat_ws('|',
        COALESCE({{ normalize_plan_type('c.plan_type') }}, 'Unknown'),
        COALESCE(c.monthly_data_gb::text, '0'),
        COALESCE(c.monthly_bill_usd::text, '0')
      )) = p.plan_id
-WHERE c.customer_id IS NOT NULL AND c.plan_type IS NOT NULL
+WHERE 
+  c.customer_id IS NOT NULL 
+  AND c.plan_type IS NOT NULL

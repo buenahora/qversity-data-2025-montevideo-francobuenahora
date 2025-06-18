@@ -3,29 +3,34 @@ version: 2
 models:
   #  SILVER_CUSTOMERS
   - name: silver_customers
-    description: Clientes deduplicados y normalizados
+    description: Clientes deduplicados y normalizados a partir de los datos crudos
     columns:
       - name: customer_id
-        tests:
-          - unique
-          - not_null
+        description: Identificador único del cliente
+        tests: [unique, not_null]
 
       - name: email
-        tests:
-          - not_null
+        description: Dirección de correo electrónico del cliente
+        tests: [not_null]
 
       - name: status
+        description: Estado del cliente en el sistema (activo, inactivo, suspendido)
         tests:
           - not_null
           - accepted_values:
               values: ['Active', 'Inactive', 'Suspended']
 
       - name: location_id
+        description: FK a la tabla silver_locations
         tests:
           - relationships:
               to: ref('silver_locations')
               field: location_id
+
       - name: device_id
+        description: FK a la tabla silver_devices
+        tests:
+          - not_null
         tests:
           - relationships:
               to: ref('silver_devices')
@@ -33,70 +38,68 @@ models:
 
   #  SILVER_SERVICES
   - name: silver_services
-    description: Catálogo único de servicios contratables
+    description: Catálogo de servicios contratables disponibles para los clientes
     columns:
       - name: service_id
-        tests:
-          - unique
-          - not_null
+        description: Identificador único del servicio
+        tests: [unique, not_null]
 
       - name: service_name
-        tests:
-          - unique
-          - not_null
+        description: Nombre del servicio estandarizado
+        tests: [unique, not_null]
 
   #  SILVER_DEVICES
   - name: silver_devices
-    description: Dimensión de dispositivos con marca y modelo limpios
+    description: Tabla de dispositivos unicos, con marca y modelo limpios y normalizados
     columns:
       - name: device_id
-        tests:
-          - unique
-          - not_null
+        description: Identificador único del dispositivo formado a partir de marca y modelo usando un hash md5
+        tests: [unique, not_null]
 
       - name: device_brand
+        description: Marca del dispositivo móvil estandarizada
         tests:
           - not_null
           - accepted_values:
               values: ['Xiaomi', 'Huawei', 'Samsung', 'Apple']
 
       - name: device_model
-        tests:
-          - not_null
+        description: Modelo del dispositivo móvil
+        tests: [not_null]
 
   #  SILVER_LOCATIONS
   - name: silver_locations
-    description: Dimensión de ubicaciones geo-normalizadas
+    description: Tabla de ubicaciones por país, ciudad y coordenadas
     columns:
       - name: location_id
-        tests:
-          - unique
-          - not_null
+        description: Identificador único de la ubicación, formado a partir de país + ciudad + latitud + longitud usando un hash md5
+        tests: [unique, not_null]
 
       - name: country
+        description: País normalizado
         tests:
           - not_null
           - accepted_values:
-              values:
-                ['Argentina', 'Chile', 'Colombia', 'Mexico', 'Peru', 'Unknown']
+              values: ['Argentina', 'Chile', 'Colombia', 'Mexico', 'Peru', 'Unknown']
 
       - name: city
-        tests:
-          - not_null
+        description: Ciudad normalizada
+        tests: [not_null]
 
       - name: latitude
-        tests:
-          - not_null
+        description: Coordenada geográfica latitudinal, entre -90 y 90
+        tests: [not_null]
 
       - name: longitude
-        tests:
-          - not_null
+        description: Coordenada geográfica longitudinal, entre -180 y 180
+        tests: [not_null]
 
   #  SILVER_CUSTOMERS_SERVICES
   - name: silver_customers_services
-    description: Relación N:M entre clientes y servicios
+    description: Relación N:M entre clientes y los servicios que tienen contratados
     columns:
       - name: customer_id
+        description: FK a tabla silver_customers
         tests:
           - not_null
           - relationships:
@@ -104,60 +107,64 @@ models:
               field: customer_id
 
       - name: service_id
+        description: FK a la tabla silver_services
         tests:
           - not_null
           - relationships:
               to: ref('silver_services')
               field: service_id
 
-  #  SILVER PLANS (plan vigente por cliente)
+  #  SILVER PLANS
   - name: silver_plans
-    description: Relación cliente-plan-operador con métricas económicas y de uso
+    description: Catálogo de planes comerciales con sus características principales
     columns:
-      # surrogate key única del plan comercial
       - name: plan_id
-        tests:
-          - unique
-          - not_null
+        description: Identificador único del plan, formada a partir de plan_type, monthly_data_gb, monthly_bill_usd usando un hash md5
+        tests: [unique, not_null]
 
-      # tipo de plan (control, prepago, pospago…)
       - name: plan_type
+        description: Tipo de plan contratado (ej. Control, Prepago, Pospago, Unknown en caso de no poder determinarlo)
         tests:
           - not_null
           - accepted_values:
-              values: ['Control', 'Prepago', 'Pospago', 'Unknown'] # agrega más si aplican
+              values: ['Control', 'Prepago', 'Pospago', 'Unknown']
 
-      # límites de datos y facturación (ya forzados a ≥ 0 con GREATEST)
       - name: monthly_data_gb
+        description: Cantidad mensual de GB incluidos en el plan
         tests: [not_null]
 
       - name: monthly_bill_usd
+        description: Facturación mensual del plan en USD
         tests: [not_null]
 
-      # # timestamp de inicio / última captura del plan
-      # - name: plan_start_ts
-      #   tests: [not_null]
 
-      # silver_plan_operator
+  # Creo que este modelo no es necesario, ya que la relación entre planes y servicios se puede hacer directamente desde silver_plans
+  # SILVER_PLAN_SERVICES
   - name: silver_plan_operator
+    description: Relación entre planes y operadores que los ofrecen
     columns:
       - name: plan_id
+        description: Llave foránea al catálogo de planes
         tests:
           - not_null
           - relationships:
               to: ref('silver_plans')
               field: plan_id
+
       - name: operator_id
+        description: Llave foránea a la tabla de operadores
         tests:
           - not_null
           - relationships:
               to: ref('silver_operators')
               field: operator_id
 
+  # SILVER_CUSTOMER_PLAN
   - name: silver_customer_plan
-    description: Relación entre clientes y planes contratados
+    description: Relación entre clientes y planes contratados con detalles de límite y uso actual
     columns:
       - name: customer_id
+        description: FK a la tabla silver_customers
         tests:
           - not_null
           - relationships:
@@ -165,6 +172,7 @@ models:
               field: customer_id
 
       - name: plan_id
+        description: FK a la tabla silver_plans
         tests:
           - not_null
           - relationships:
@@ -172,13 +180,13 @@ models:
               field: plan_id
 
       - name: plan_start_ts
-        tests:
-          - not_null
+        description: Fecha en la que se detectó por primera vez ese plan activo
+        tests: [not_null]
 
       - name: credit_limit
-        tests:
-          - not_null
+        description: Límite de crédito asignado al cliente
+        tests: [not_null]
 
       - name: data_usage_current_month
-        tests:
-          - not_null
+        description: Uso de datos móviles del cliente en el mes actual
+        tests: [not_null]

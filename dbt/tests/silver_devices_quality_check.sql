@@ -1,11 +1,15 @@
 SELECT d.*
-FROM {{ ref('silver_devices') }} AS d
+FROM 
+    {{ ref('silver_devices') }} AS d
 INNER JOIN (
 
     SELECT device_brand,
            device_model
-    FROM {{ ref('silver_devices') }}
-    GROUP BY device_brand, device_model
+    FROM 
+        {{ ref('silver_devices') }}
+    GROUP BY 
+        device_brand, 
+        device_model
     HAVING COUNT(*) > 1
 
 ) AS dups

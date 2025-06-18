@@ -5,7 +5,12 @@ import os
 
 # Función principal del task
 def create_postgres_schemas():
+    '''
+    Crea los esquemas bronze, silver y gold en PostgreSQL si no existen.
+    Necesita que la variable de entorno AIRFLOW__DATABASE__SQL_ALCHEMY_CONN esté configurada.
+    '''
     from sqlalchemy import create_engine, text
+    
     db_url = os.getenv("AIRFLOW__DATABASE__SQL_ALCHEMY_CONN")
     if not db_url:
         raise ValueError("La variable de entorno AIRFLOW__DATABASE__SQL_ALCHEMY_CONN no está definida.")
@@ -14,7 +19,7 @@ def create_postgres_schemas():
     with engine.connect() as conn:
         for schema in ["bronze", "silver", "gold"]:
             conn.execute(text(f"CREATE SCHEMA IF NOT EXISTS {schema};"))
-            print(f"✅ Esquema '{schema}' verificado o creado.")
+            print(f"Esquema '{schema}' verificado o creado.")
 
 # Argumentos por defecto del DAG
 default_args = {
@@ -37,7 +42,9 @@ with DAG(
     tags=["setup", "postgres"]
 ) as dag:
 
+    # Task para crear los esquemas en PostgreSQL
     create_schemas_task = PythonOperator(
         task_id="create_postgres_schemas",
+        doc="Crea los esquemas bronze, silver y gold en PostgreSQL si no existen.",
         python_callable=create_postgres_schemas
     )

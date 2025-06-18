@@ -1,5 +1,6 @@
 SELECT *
-FROM {{ ref('silver_locations') }}
+FROM 
+   {{ ref('silver_locations') }}
 WHERE latitude IS NULL
    OR longitude IS NULL
    OR latitude NOT BETWEEN -90 AND 90
