@@ -31,7 +31,6 @@ models:
         description: FK a la tabla silver_devices
         tests:
           - not_null
-        tests:
           - relationships:
               to: ref('silver_devices')
               field: device_id
@@ -159,8 +158,8 @@ models:
               to: ref('silver_operators')
               field: operator_id
 
-  # SILVER_CUSTOMER_PLAN
-  - name: silver_customer_plan
+  # SILVER_CUSTOMERS_PLANS
+  - name: silver_customers_plans
     description: Relación entre clientes y planes contratados con detalles de límite y uso actual
     columns:
       - name: customer_id
