@@ -28,5 +28,7 @@ SELECT
 FROM 
     {{ ref('silver_customers') }} AS c
 JOIN 
-    {{ ref('silver_locations') }} AS l ON c.location_id = l.location_id
+    {{ ref('silver_locations') }} AS l 
+ON 
+    c.location_id = l.location_id
 
