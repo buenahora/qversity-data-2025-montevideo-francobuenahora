@@ -34,6 +34,8 @@ WHERE
     AND device_model IS NOT NULL
     AND device_model != ''
     AND device_brand != ''
+    AND registration_date <= CURRENT_DATE
+
 
 ORDER BY
     customer_id,

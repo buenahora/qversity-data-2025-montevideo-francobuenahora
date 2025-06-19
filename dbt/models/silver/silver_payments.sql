@@ -1,16 +1,22 @@
 {{ config(materialized = 'table') }}
 
 WITH exploded AS (
-
     SELECT
-        customer_id,
-        jsonb_array_elements(payment_history::jsonb) AS p
+        s.customer_id,
+        jsonb_array_elements(s.payment_history::jsonb) AS p
     FROM 
-        {{ ref('staging_mobile_raw') }}
+        {{ ref('staging_mobile_raw') }} s
     WHERE 
-        payment_history IS NOT NULL
-        AND jsonb_typeof(payment_history::jsonb) = 'array'
+        s.payment_history IS NOT NULL
+        AND jsonb_typeof(s.payment_history::jsonb) = 'array'
+),
 
+-- valid customers only
+valid_payments AS (
+    SELECT
+        e.*
+    FROM exploded e
+    JOIN {{ ref('silver_customers') }} c ON e.customer_id = c.customer_id
 )
 
 SELECT
@@ -37,7 +43,4 @@ SELECT
     initcap(p ->> 'status') AS payment_status,
     CURRENT_TIMESTAMP AS run_ts
 
-FROM 
-    exploded
-WHERE 
-    customer_id IS NOT NULL
+FROM valid_payments

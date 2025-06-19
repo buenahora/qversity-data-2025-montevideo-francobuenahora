@@ -197,3 +197,24 @@ models:
       - name: data_usage_current_month
         description: Uso de datos móviles del cliente en el mes actual
         tests: [not_null]
+
+    models:
+      - name: silver_payments
+        description: Pagos desnormalizados extraídos del campo payment_history de staging_mobile_raw.
+        columns:
+          - name: customer_id
+            description: ID del cliente que realizó el pago
+            tests:
+              - not_null
+              - relationships:
+                  to: ref('silver_customers')
+                  field: customer_id
+
+          - name: payment_date
+            description: Fecha del pago
+
+          - name: payment_amount
+            description: Monto pagado por el cliente en ese pago
+
+          - name: payment_status
+            description: Estado del pago (Paid, Pending, Failed)
