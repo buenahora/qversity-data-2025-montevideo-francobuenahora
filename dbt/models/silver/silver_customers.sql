@@ -5,7 +5,7 @@ SELECT DISTINCT ON (customer_id)
     INITCAP(first_name) AS first_name,
     INITCAP(last_name) AS last_name,
     email,
-    phone_number,
+    {{normalize_phone('c.phone_number')}} AS phone_number,
     age,
     registration_date,
     credit_score,

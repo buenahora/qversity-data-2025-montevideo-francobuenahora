@@ -4,6 +4,7 @@ SELECT
     customer_id,
     first_name,
     last_name,
+    phone_number,
     email,
     age,
     FLOOR(age / 10) * 10 AS age_range,
