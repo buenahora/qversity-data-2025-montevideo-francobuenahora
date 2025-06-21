@@ -1,0 +1,254 @@
+version: 2
+
+models:
+  - name: gold_customer
+    description: Tabla de dimensión que contiene información estática del cliente, como edad, ubicación, score de crédito y dispositivo.
+    columns:
+      - name: customer_id
+        description: ID único del cliente
+        tests:
+          - unique
+          - not_null
+
+      - name: registration_date
+        description: Fecha de alta del cliente
+        tests:
+          - not_null
+
+      - name: age
+        description: Edad del cliente (en años)
+        tests:
+          - not_null
+
+      - name: age_range
+        description: 'Rango de edad del cliente en intervalos de 10 años (ej. 20-29, 30-39)'
+        tests:
+          - not_null
+
+      - name: credit_score
+        description: Puntaje de crédito del cliente
+        tests:
+          - not_null
+
+      - name: credit_bucket
+        description: Segmento al que pertenece el cliente según su credit_score
+        tests:
+          - not_null
+
+      - name: country
+        description: País del cliente
+        tests:
+          - not_null
+
+      - name: region
+        description: Región calculada en base al país
+        tests:
+          - not_null
+
+      - name: city
+        description: Ciudad
+        tests:
+          - not_null
+
+      - name: status
+        description: Estado actual del cliente (active, suspended, inactive)
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Active', 'Suspended', 'Inactive']
+
+      - name: device_id
+        description: ID del dispositivo usado por el cliente
+        tests:
+          - relationships:
+              to: ref('gold_device')
+              field: device_id
+          - not_null
+
+  - name: gold_customer_monthly
+    description: Tabla de hechos con una fila por cliente por mes. Contiene datos financieros, de estado y comportamiento del cliente.
+    columns:
+      - name: customer_id
+        description: ID del cliente
+        tests:
+          - not_null
+          - relationships:
+              to: ref('gold_customer')
+              field: customer_id
+
+      - name: date_month
+        description: Primer día del mes de referencia
+        tests:
+          - not_null
+          - relationships:
+              to: ref('gold_date')
+              field: date_month
+
+      - name: plan_id
+        description: Plan activo del cliente en ese mes
+        tests:
+          - relationships:
+              to: ref('gold_plan')
+              field: plan_id
+
+      - name: operator_id
+        description: Operador asociado al plan del cliente
+        tests:
+          - relationships:
+              to: ref('gold_operator')
+              field: operator_id
+
+      - name: is_new_customer
+        description: TRUE si ese mes corresponde al alta del cliente
+
+      - name: status
+        description: Estado del cliente en ese mes
+
+      - name: credit_score
+        description: Score de crédito al momento del mes (deberia cambiar con el tiempo pero en el dataset no cambia)
+
+      - name: device_id
+        description: Dispositivo usado ese mes (asumo que puede cambiar con el tiempo y nos interesa tener un historico)
+        tests:
+          - relationships:
+              to: ref('gold_device')
+              field: device_id
+
+      - name: monthly_bill_usd
+        description: Precio mensual del plan asignado
+
+      - name: total_paid_usd
+        description: Total efectivamente pagado ese mes
+
+      - name: latest_status
+        description: Estado del último pago del mes (Paid, Failed, Pending.)
+
+      - name: num_payments
+        description: Número de pagos registrados ese mes
+
+      - name: has_payment_issue
+        description: TRUE si el pago fue fallido o pendiente
+
+  - name: gold_plan
+    description: Tabla de dimensión con información sobre los planes disponibles.
+    columns:
+      - name: plan_id
+        description: ID único del plan
+        tests:
+          - unique
+          - not_null
+
+      - name: plan_type
+        description: Tipo de plan (Prepago, Postpago, Control, Unknown)
+
+      - name: monthly_data_gb
+        description: Cantidad de GB incluidos mensualmente
+
+      - name: monthly_bill_usd
+        description: Precio mensual en USD
+
+  - name: gold_operator
+    description: Tabla de dimensión con los operadores móviles disponibles.
+    columns:
+      - name: operator_id
+        description: ID único del operador
+        tests:
+          - unique
+          - not_null
+
+      - name: operator_name
+        description: Nombre del operador
+
+  - name: gold_device
+    description: Tabla de dimensión con los dispositivos utilizados por los clientes.
+    columns:
+      - name: device_id
+        description: ID único del dispositivo
+        tests:
+          - unique
+          - not_null
+
+      - name: brand
+        description: Marca del dispositivo
+
+      - name: model
+        description: Modelo del dispositivo
+
+  - name: gold_payment
+    description: Tabla de hechos con información resumida de pagos por cliente y mes.
+    columns:
+      - name: customer_id
+        description: ID del cliente
+        tests:
+          - not_null
+          - relationships:
+              to: ref('gold_customer')
+              field: customer_id
+
+      - name: date_month
+        description: Mes en que se registró el pago
+        tests:
+          - not_null
+          - relationships:
+              to: ref('gold_date')
+              field: date_month
+
+      - name: total_paid_usd
+        description: Monto total pagado por el cliente en ese mes
+
+      - name: num_payments
+        description: Número de pagos registrados
+
+      - name: latest_status
+        description: Estado del último pago (Paid, Failed, Pending, Late)
+
+  - name: gold_service_client_monthly
+    description: Tabla de hechos con los servicios contratados por cada cliente por mes.
+    columns:
+      - name: customer_id
+        description: ID del cliente
+        tests:
+          - not_null
+          - relationships:
+              to: ref('gold_customer')
+              field: customer_id
+
+      - name: service_name
+        description: Servicio contratado
+        tests:
+          - not_null
+
+      - name: date_month
+        description: Mes de vigencia del servicio
+        tests:
+          - not_null
+          - relationships:
+              to: ref('gold_date')
+              field: date_month
+
+      - name: is_active
+        description: TRUE si el servicio estaba activo ese mes
+
+  - name: gold_date
+    description: Dimensión de fechas a nivel mensual.
+    columns:
+      - name: date_month
+        description: Primer día del mes
+        tests:
+          - unique
+          - not_null
+
+      - name: year
+        description: Año
+
+      - name: month
+        description: Mes (1 a 12)
+
+      - name: month_name
+        description: Nombre del mes
+
+      - name: quarter
+        description: Trimestre
+
+      - name: is_current_month
+        description: TRUE si es el mes actual

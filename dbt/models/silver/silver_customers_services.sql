@@ -24,4 +24,4 @@ ON
 JOIN 
   {{ ref('silver_services') }} AS s
 ON 
-  e.service_name = s.service_name
+  initcap(e.service_name) = s.service_name

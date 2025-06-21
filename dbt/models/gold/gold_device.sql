@@ -7,3 +7,4 @@ SELECT
   CURRENT_TIMESTAMP AS run_ts
 FROM 
   {{ ref('silver_devices') }}
+  

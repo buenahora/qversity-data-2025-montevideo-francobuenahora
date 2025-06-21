@@ -1,8 +1,8 @@
 {{ config(materialized = 'table') }}
 
 SELECT
-    operator_id,
-    operator,
-    CURRENT_TIMESTAMP AS run_ts
+  operator_id,
+  operator,
+  CURRENT_TIMESTAMP AS run_ts
 FROM 
-    {{ ref('silver_operators') }}
+  {{ ref('silver_operators') }}

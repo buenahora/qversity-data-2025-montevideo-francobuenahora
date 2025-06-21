@@ -6,6 +6,7 @@ SELECT
     last_name,
     email,
     age,
+    FLOOR(age / 10) * 10 AS age_range,
     registration_date,
     credit_score,
 
