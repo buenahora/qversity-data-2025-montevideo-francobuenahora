@@ -70,5 +70,5 @@ docker compose exec dbt dbt test        # runs both silver & gold test suites
 
 ```bash
 docker compose exec dbt dbt docs generate   # compiles docs + lineage
-docker compose exec dbt dbt docs serve      # serves at http://localhost:8081
+docker compose exec dbt exec dbt dbt docs serve --port 8080 --host 0.0.0.0      # serves at http://localhost:8081
 ```
