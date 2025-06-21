@@ -1,199 +1,223 @@
 version: 2
 
 models:
-  #  SILVER_CUSTOMERS
+  # SILVER_CUSTOMERS
   - name: silver_customers
-    description: Clientes deduplicados y normalizados a partir de los datos crudos
+    description: Clientes deduplicados y normalizados a partir de los datos crudos.
     columns:
       - name: customer_id
-        description: Identificador único del cliente
+        description: Identificador único del cliente.
         tests: [unique, not_null]
-
+      - name: first_name
+        description: Primer nombre del cliente.
+      - name: last_name
+        description: Apellido del cliente.
       - name: email
-        description: Dirección de correo electrónico del cliente
+        description: Dirección de correo electrónico del cliente.
         tests: [not_null]
-
+      - name: phone_number
+        description: Número de teléfono del cliente.
+      - name: age
+        description: Edad del cliente.
+      - name: registration_date
+        description: Fecha en que el cliente se registró.
+      - name: credit_score
+        description: Puntaje de crédito del cliente.
       - name: status
-        description: Estado del cliente en el sistema (activo, inactivo, suspendido)
+        description: Estado del cliente (Active, Inactive, Suspended).
         tests:
           - not_null
           - accepted_values:
               values: ['Active', 'Inactive', 'Suspended']
-
       - name: location_id
-        description: FK a la tabla silver_locations
+        description: FK a la tabla silver_locations.
         tests:
           - relationships:
               to: ref('silver_locations')
               field: location_id
-
       - name: device_id
-        description: FK a la tabla silver_devices
+        description: FK a la tabla silver_devices.
         tests:
           - not_null
           - relationships:
               to: ref('silver_devices')
               field: device_id
-
-  #  SILVER_SERVICES
-  - name: silver_services
-    description: Catálogo de servicios contratables disponibles para los clientes
-    columns:
-      - name: service_id
-        description: Identificador único del servicio
-        tests: [unique, not_null]
-
-      - name: service_name
-        description: Nombre del servicio estandarizado
-        tests: [unique, not_null]
-
-  #  SILVER_DEVICES
-  - name: silver_devices
-    description: Tabla de dispositivos unicos, con marca y modelo limpios y normalizados
-    columns:
-      - name: device_id
-        description: Identificador único del dispositivo formado a partir de marca y modelo usando un hash md5
-        tests: [unique, not_null]
-
-      - name: device_brand
-        description: Marca del dispositivo móvil estandarizada
-        tests:
-          - not_null
-          - accepted_values:
-              values: ['Xiaomi', 'Huawei', 'Samsung', 'Apple']
-
-      - name: device_model
-        description: Modelo del dispositivo móvil
-        tests: [not_null]
-
-  #  SILVER_LOCATIONS
-  - name: silver_locations
-    description: Tabla de ubicaciones por país, ciudad y coordenadas
-    columns:
-      - name: location_id
-        description: Identificador único de la ubicación, formado a partir de país + ciudad + latitud + longitud usando un hash md5
-        tests: [unique, not_null]
-
-      - name: country
-        description: País normalizado
-        tests:
-          - not_null
-          - accepted_values:
-              values:
-                ['Argentina', 'Chile', 'Colombia', 'Mexico', 'Peru', 'Unknown']
-
-      - name: city
-        description: Ciudad normalizada
-        tests: [not_null]
-
-      - name: latitude
-        description: Coordenada geográfica latitudinal, entre -90 y 90
-        tests: [not_null]
-
-      - name: longitude
-        description: Coordenada geográfica longitudinal, entre -180 y 180
-        tests: [not_null]
-
-  #  SILVER_CUSTOMERS_SERVICES
-  - name: silver_customers_services
-    description: Relación N:M entre clientes y los servicios que tienen contratados
-    columns:
-      - name: customer_id
-        description: FK a tabla silver_customers
-        tests:
-          - not_null
-          - relationships:
-              to: ref('silver_customers')
-              field: customer_id
-
-      - name: service_id
-        description: FK a la tabla silver_services
-        tests:
-          - not_null
-          - relationships:
-              to: ref('silver_services')
-              field: service_id
-
-  #  SILVER PLANS
-  - name: silver_plans
-    description: Catálogo de planes comerciales con sus características principales
-    columns:
-      - name: plan_id
-        description: Identificador único del plan, formada a partir de plan_type, monthly_data_gb, monthly_bill_usd usando un hash md5
-        tests: [unique, not_null]
-
-      - name: plan_type
-        description: Tipo de plan contratado (ej. Control, Prepago, Pospago, Unknown en caso de no poder determinarlo)
-        tests:
-          - not_null
-          - accepted_values:
-              values: ['Control', 'Prepago', 'Pospago', 'Unknown']
-
-      - name: monthly_data_gb
-        description: Cantidad mensual de GB incluidos en el plan
-        tests: [not_null]
-
-      - name: monthly_bill_usd
-        description: Facturación mensual del plan en USD
-        tests: [not_null]
-
-      - name: operator_id
-        description: Llave foránea a la tabla de operadores
-        tests:
-          - not_null
-          - relationships:
-              to: ref('silver_operators')
-              field: operator_id
+      - name: ingestion_date
+        description: Fecha de ingestión de los datos.
+      - name: source
+        description: Origen del dato (archivo o sistema fuente).
+      - name: run_ts
+        description: Timestamp de ejecución del pipeline para trazabilidad.
 
   # SILVER_CUSTOMERS_PLANS
   - name: silver_customers_plans
-    description: Relación entre clientes y planes contratados con detalles de límite y uso actual
+    description: Relación entre clientes y planes contratados con detalles de límite y uso actual.
     columns:
       - name: customer_id
-        description: FK a la tabla silver_customers
+        description: FK a la tabla silver_customers.
         tests:
           - not_null
           - relationships:
               to: ref('silver_customers')
               field: customer_id
-
       - name: plan_id
-        description: FK a la tabla silver_plans
+        description: FK a la tabla silver_plans.
         tests:
           - not_null
           - relationships:
               to: ref('silver_plans')
               field: plan_id
-
-      - name: plan_start_ts
-        description: Fecha en la que se detectó por primera vez ese plan activo
-        tests: [not_null]
-
       - name: credit_limit
-        description: Límite de crédito asignado al cliente
+        description: Límite de crédito asignado al cliente.
         tests: [not_null]
-
       - name: data_usage_current_month
-        description: Uso de datos móviles del cliente en el mes actual
+        description: Uso de datos móviles del cliente en el mes actual.
         tests: [not_null]
+      - name: plan_start_ts
+        description: Fecha de inicio de uso del plan.
+        tests: [not_null]
+      - name: run_ts
+        description: Timestamp de ejecución para control de versiones.
 
-    models:
-      - name: silver_payments
-        description: Pagos desnormalizados extraídos del campo payment_history de staging_mobile_raw.
-        columns:
-          - name: customer_id
-            description: ID del cliente que realizó el pago
-            tests:
-              - not_null
-              - relationships:
-                  to: ref('silver_customers')
-                  field: customer_id
+  # SILVER_CUSTOMERS_SERVICES
+  - name: silver_customers_services
+    description: Relación N:M entre clientes y servicios contratados.
+    columns:
+      - name: customer_service_id
+        description: Identificador único de la relación cliente-servicio.
+      - name: customer_id
+        description: FK al cliente.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_customers')
+              field: customer_id
+      - name: service_id
+        description: FK al servicio.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_services')
+              field: service_id
+      - name: run_ts
+        description: Timestamp de ejecución del pipeline.
 
-          - name: payment_date
-            description: Fecha del pago
+  # SILVER_OPERATORS
+  - name: silver_operators
+    description: Tabla de operadores móviles.
+    columns:
+      - name: operator_id
+        description: Identificador único del operador.
+        tests: [unique, not_null]
+      - name: operator
+        description: Nombre del operador.
+      - name: run_ts
+        description: Timestamp de ejecución del pipeline.
 
-          - name: payment_amount
-            description: Monto pagado por el cliente en ese pago
+  # SILVER_SERVICES
+  - name: silver_services
+    description: Catálogo de servicios disponibles para contratación.
+    columns:
+      - name: service_id
+        description: Identificador único del servicio.
+        tests: [unique, not_null]
+      - name: service_name
+        description: Nombre del servicio.
+        tests: [unique, not_null]
 
-          - name: payment_status
-            description: Estado del pago (Paid, Pending, Failed)
+  # SILVER_DEVICES
+  - name: silver_devices
+    description: Dispositivos móviles normalizados.
+    columns:
+      - name: device_id
+        description: Identificador único del dispositivo.
+        tests: [unique, not_null]
+      - name: device_brand
+        description: Marca del dispositivo.
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Xiaomi', 'Huawei', 'Samsung', 'Apple']
+      - name: device_model
+        description: Modelo del dispositivo.
+        tests: [not_null]
+      - name: run_ts
+        description: Timestamp de ejecución del pipeline.
+
+  # SILVER_LOCATIONS
+  - name: silver_locations
+    description: Ubicaciones geográficas de clientes.
+    columns:
+      - name: location_id
+        description: Identificador único de ubicación (hash).
+        tests: [unique, not_null]
+      - name: city
+        description: Ciudad normalizada.
+        tests: [not_null]
+      - name: country
+        description: País del cliente.
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                ['Argentina', 'Chile', 'Colombia', 'Mexico', 'Peru', 'Unknown']
+      - name: latitude
+        description: Latitud geográfica (-90 a 90).
+        tests: [not_null]
+      - name: longitude
+        description: Longitud geográfica (-180 a 180).
+        tests: [not_null]
+      - name: run_ts
+        description: Timestamp de ejecución.
+
+  # SILVER_PLANS
+  - name: silver_plans
+    description: Catálogo de planes disponibles.
+    columns:
+      - name: plan_id
+        description: Identificador único del plan (hash).
+        tests: [unique, not_null]
+      - name: plan_type
+        description: Tipo de plan (Control, Prepago, Pospago, Unknown).
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Control', 'Prepago', 'Pospago', 'Unknown']
+      - name: monthly_data_gb
+        description: GB incluidos por mes.
+        tests: [not_null]
+      - name: monthly_bill_usd
+        description: Precio mensual en USD.
+        tests: [not_null]
+      - name: operator_id
+        description: FK al operador que provee el plan.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_operators')
+              field: operator_id
+      - name: run_ts
+        description: Timestamp de ejecución del pipeline.
+
+  # SILVER_PAYMENTS
+  - name: silver_payments
+    description: Pagos desnormalizados extraídos del campo payment_history.
+    columns:
+      - name: payment_id
+        description: Identificador único del pago (hash de customer_id + fecha + monto + estado).
+        tests: [unique, not_null]
+      - name: customer_id
+        description: ID del cliente que realizó el pago.
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_customers')
+              field: customer_id
+      - name: payment_date
+        description: Fecha del pago.
+      - name: payment_amount
+        description: Monto del pago realizado.
+      - name: payment_status
+        description: Estado del pago (Paid, Pending, Failed).
+      - name: run_ts
+        description: Timestamp de ejecución del pipeline.
