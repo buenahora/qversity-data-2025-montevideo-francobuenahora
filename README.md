@@ -39,7 +39,7 @@ git clone https://github.com/buenahora/qversity-data-2025-montevideo-francobuena
 cd qversity-data-2025-montevideo-francobuenahora
 docker compose up -d       # airflow + postgres + dbt
 
-# open the Airflow UI → http://localhost:8080 (admin / airflow)
+# open the Airflow UI → http://localhost:8080 (admin / admin)
 # open dbt Docs (once generated) → http://localhost:8081
 ```
 
@@ -58,7 +58,8 @@ docker compose up -d       # airflow + postgres + dbt
 ## ✅ Run Tests Manually
 
 ```bash
-docker compose exec dbt dbt test        # runs both silver & gold test suites
+# runs both silver & gold test suites
+docker compose exec dbt dbt test
 ```
 
 - All **schema tests** live in `models/**/schema.yml`
@@ -69,6 +70,9 @@ docker compose exec dbt dbt test        # runs both silver & gold test suites
 ## 📚 Generate & Serve dbt Docs
 
 ```bash
-docker compose exec dbt dbt docs generate   # compiles docs + lineage
-docker compose exec dbt exec dbt dbt docs serve --port 8080 --host 0.0.0.0      # serves at http://localhost:8081
+# compiles docs + lineage
+docker compose exec dbt dbt docs generate
+
+ # serves at http://localhost:8081
+docker compose exec dbt dbt docs serve --port 8080 --host 0.0.0.0
 ```
