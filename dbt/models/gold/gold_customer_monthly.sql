@@ -104,7 +104,9 @@ SELECT
   total_paid_usd,
   latest_status,
   num_payments,
-  has_payment_issue
+  has_payment_issue,
+  CURRENT_TIMESTAMP AS run_ts
+
 FROM 
   customer_months
 ORDER BY 

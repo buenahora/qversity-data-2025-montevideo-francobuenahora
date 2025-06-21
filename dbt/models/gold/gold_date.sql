@@ -23,6 +23,7 @@ SELECT
   EXTRACT(MONTH FROM date_month) AS month,
   TO_CHAR(date_month, 'Month') AS month_name,
   EXTRACT(QUARTER FROM date_month) AS quarter,
-  date_month = DATE_TRUNC('month', CURRENT_DATE) AS is_current_month
+  date_month = DATE_TRUNC('month', CURRENT_DATE) AS is_current_month,
+  CURRENT_TIMESTAMP AS run_ts
 FROM 
   date_series

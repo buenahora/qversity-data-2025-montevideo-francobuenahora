@@ -246,7 +246,7 @@ models:
         description: Estado del último intento de pago (Paid, Failed, Pending, Late)
 
   # -----------------------------------------------------
-  - name: gold_service_client_monthly
+  - name: gold_customers_services_monthly
     description: Hechos servicio-cliente-mes, incluye qué servicios están activos.
     columns:
       - name: customer_id

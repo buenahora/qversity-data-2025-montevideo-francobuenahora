@@ -32,4 +32,8 @@ subscriptions AS (
     months m
 )
 
-SELECT * FROM subscriptions
+SELECT 
+  *,
+  CURRENT_TIMESTAMP AS run_ts
+FROM 
+  subscriptions

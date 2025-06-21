@@ -122,11 +122,13 @@ with DAG(
 
     run_gold = BashOperator(
         task_id="dbt_run_gold",
+        doc="Ejecuta dbt run para transformar los datos de capa silver a gold.",
         bash_command="cd /dbt && dbt run --select gold"
     )
 
     test_gold = BashOperator(
         task_id="dbt_test_gold",
+        doc="Ejecuta dbt test para validar la calidad de los datos transformados en la capa gold.",
         bash_command="cd /dbt && dbt test --select gold"
     )
 

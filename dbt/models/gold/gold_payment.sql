@@ -3,7 +3,9 @@ SELECT
   DATE_TRUNC('month', payment_date)::DATE AS date_month,
   SUM(payment_amount) AS total_paid_usd,
   COUNT(*) AS num_payments,
-  MAX(payment_status) AS latest_status
+  MAX(payment_status) AS latest_status,
+  CURRENT_TIMESTAMP AS run_ts
+
 FROM 
   silver.silver_payments
 GROUP BY 

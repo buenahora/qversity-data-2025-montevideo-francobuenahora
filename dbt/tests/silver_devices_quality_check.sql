@@ -1,3 +1,8 @@
+
+-- Verifica que la tabla silver_devices cumple con las reglas de calidad de datos
+-- Reglas de calidad:
+-- 1. Silver devices debe tener un modelo y marca de dispositivo únicos
+
 SELECT d.*
 FROM 
     {{ ref('silver_devices') }} AS d

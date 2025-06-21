@@ -1,3 +1,10 @@
+-- Verifica que la tabla silver_customers cumple con las reglas de calidad de datos
+-- Reglas de calidad:
+-- 1. Edad debe estar entre 0 y 119 años
+-- 2. Puntaje de crédito debe estar entre 300 y 850
+-- 3. Estado debe ser 'Active', 'Inactive' o 'Suspended'
+-- 4. Correo electrónico debe tener un formato válido
+
 SELECT *
 FROM 
   {{ ref('silver_customers') }}
