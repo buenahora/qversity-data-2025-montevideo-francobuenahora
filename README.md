@@ -20,6 +20,9 @@ star-schema with dbt, and finally surfaces business insights/dashboards.
 - **Device mix** – Samsung leads overall, but Apple dominates high-credit segments
 - **Top revenue service bundle** – _Streaming + Roaming_ drives +23 % incremental MRR
 
+> ℹ️ Para obtener estos insights de negocio, en la carpeta [`/analysis`](./analysis) encontrarás un conjunto de queries SQL, uno por cada pregunta planteada, que operan exclusivamente sobre las tablas **gold**.  
+> Cada consulta responde directamente a un KPI o métrica relevante para el negocio, utilizando hechos y dimensiones ya depurados y enriquecidos.
+
 ---
 
 ## 👤 Participant
