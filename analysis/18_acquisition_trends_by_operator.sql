@@ -6,7 +6,9 @@ SELECT
 FROM
     gold.gold_customer_monthly AS cm
 JOIN
-    gold.gold_operator AS o ON cm.operator_id = o.operator_id
+    gold.gold_operator AS o 
+ON 
+    cm.operator_id = o.operator_id
 GROUP BY
     o.operator, date_month
 ORDER BY

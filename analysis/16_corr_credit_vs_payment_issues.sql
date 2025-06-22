@@ -2,12 +2,14 @@
 WITH cust_issues AS (
     SELECT
         c.customer_id,
-        c.credit_score::numeric                     AS credit_score,
-        MAX(cm.has_payment_issue::int)              AS ever_issue
+        c.credit_score::numeric AS credit_score,
+        MAX(cm.has_payment_issue::int) AS ever_issue
     FROM
         gold.gold_customer AS c
     JOIN
-        gold.gold_customer_monthly AS cm ON cm.customer_id = c.customer_id
+        gold.gold_customer_monthly AS cm 
+    ON 
+        cm.customer_id = c.customer_id
     GROUP BY
         c.customer_id, c.credit_score
 )

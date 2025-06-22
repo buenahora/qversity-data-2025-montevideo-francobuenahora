@@ -100,3 +100,9 @@ docker compose exec dbt dbt docs generate
  # serves at http://localhost:8081
 docker compose exec dbt dbt docs serve --port 8080 --host 0.0.0.0
 ```
+
+#### 🖼️ Static ERD
+
+A static version of the ERD is included below for quick reference:
+
+![ERD of Silver Layer](assets/erd_silver_layer.jpg)
